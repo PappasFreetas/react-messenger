@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  react-messenger:
+    container_name: frontend-app
+    build:
+      context: .
+      dockerfile: apps/react-messenger/Dockerfile
+    ports:
+      - '3000:80' # Expose the UI app on port 3000
+    networks:
+      - app-network
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - '4000:3000' # Expose the backend on port 4000
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
