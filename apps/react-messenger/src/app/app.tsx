@@ -1,11 +1,20 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NxWelcome from './nx-welcome';
+import Register from './components/register';
 
-export function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      <NxWelcome title="react-messenger" />
-    </div>
+    <Router>
+      <Routes>
+        {/* Route for the homepage */}
+        <Route path="/" element={<NxWelcome title="react-messenger" />} />
+
+        {/* Route for the registration page */}
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
