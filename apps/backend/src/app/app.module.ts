@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User } from './user/user.entity';
       synchronize: true, // auto synchs the db schema (disable in prod)
     }),
     TypeOrmModule.forFeature([User]), // Register User entity
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 # Install dependencies
 RUN npm install
+
+# Rebuild bcrypt for current architecture
+RUN npm rebuild bcrypt --build-from-source
 # Copy the entire monorepo to the container
 COPY . .
 # Build the NestJS app
