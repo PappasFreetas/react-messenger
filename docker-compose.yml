@@ -30,6 +30,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: messenger
+      JWT_SECRET: your-secret-key
 
   db:
     container_name: postgres-db

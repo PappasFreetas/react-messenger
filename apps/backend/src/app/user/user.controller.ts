@@ -1,11 +1,16 @@
-import { Body, Controller, Post, BadRequestException, HttpCode } from '@nestjs/common';
+import { Body, Controller, Post, BadRequestException, HttpCode, UseGuards, Req, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
+import { AuthService } from '../auth/auth.service';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService, // Inject authservice
+              ) {}
 
   @Post('register')
   async register(
@@ -27,7 +32,12 @@ export class UserController {
     if (!user) {
       throw new BadRequestException('Invalid credentials');
     }
-    // generate a token - TBD implementing JWTs
-    return { token: 'token' }; // replace with real JWT
+    return this.authService.login(user);
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard('jwt')) // protect endpoint w/ jwt strategy
+  getMe(@Req() req: any) {
+    return req.user; // user data is added to request by JwtStrategy
   }
 }
