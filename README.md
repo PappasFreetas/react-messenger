@@ -6,6 +6,26 @@
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
+## About this project
+This is a test project me for to:
+ * gain better understanding of how Nx monorepos work
+ * test using NestJS backend
+ * real-time chat functionality with websockets
+
+To run both services simultaneously, use:
+```sh
+nx run-many --parallel --target=serve --projects=react-messenger,backend
+```
+from the root directory of the project
+
+## TODO List
+* [ x ] - get monorepo set up and running locally
+* [ x ] - dockerize front and backend + set up docker compose
+* [ x ] - implement chat functionality without real-time
+* [ _ ] - real-time functionality
+* [ _ ] - users can add attachments to chats
+* [ _ ] - users can add MULTIPLE attachments to chats
+
 ## Run tasks
 
 To run the dev server for your app, use:
