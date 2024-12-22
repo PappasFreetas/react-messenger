@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NxWelcome from './nx-welcome';
 import RegisterOrLogin from './components/registerOrLogin';
+import Chat from './components/chat';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
 
         {/* Route for the registration page */}
         <Route path="/auth" element={<RegisterOrLogin />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </Router>
   );
