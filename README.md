@@ -18,6 +18,8 @@ nx run-many --parallel --target=serve --projects=react-messenger,backend
 ```
 from the root directory of the project
 
+If you're trying to run this locally, you will need to update the SAMPLE-DOT-ENV file in the /backend folder
+
 ## TODO List
 * [ x ] - get monorepo set up and running locally
 * [ x ] - dockerize front and backend + set up docker compose

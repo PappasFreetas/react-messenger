@@ -1,0 +1,7 @@
+# this is sample .env file - real file, rename this file to ".env" and replace values with your values
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=password
+DB_NAME=messenger
+JWT_SECRET=your-secret-key
