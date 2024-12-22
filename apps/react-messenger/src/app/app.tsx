@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NxWelcome from './nx-welcome';
-import Register from './components/register';
+import RegisterOrLogin from './components/registerOrLogin';
 
 const App: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ const App: React.FC = () => {
         <Route path="/" element={<NxWelcome title="react-messenger" />} />
 
         {/* Route for the registration page */}
-        <Route path="/register" element={<Register />} />
+        <Route path="/auth" element={<RegisterOrLogin />} />
       </Routes>
     </Router>
   );

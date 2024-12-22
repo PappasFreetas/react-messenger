@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/user.entity';
@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -61,9 +62,31 @@ export class AuthService {
    * @param user - User who JWT is generated for
    * @returns Object containing JWT
    */
-  async login(user: User): Promise<{ token: string }> {
-    const payload = { username: user.email, sub: user.id }; // Data to embed in token
-    return { token: this.jwtService.sign(payload) }; // Sign and return token
+  async login({ email, password }: LoginDto): Promise<{ accessToken: string, user: User }> {
+    // look up user in the db by email
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      // if no user is found, throw unauthorizedException
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // compare provided password with hashed password in db
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      // if password is incorrect throw UnauthorizedException
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // generate payload for JWT
+    const payload = { sub: user.id, email: user.email }; // sub usually stands for subject
+
+    // sign JWT
+    const token = this.jwtService.sign(payload);
+
+    // return token and user info
+    return { accessToken: token, user}
   }
 
 }

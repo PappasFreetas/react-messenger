@@ -23,17 +23,17 @@ export class UserController {
     return this.userService.register(body.email, body.password, body.username);
   }
 
-  @Post('login')
-  @HttpCode(200) // setting status code to 200, default post is 201
-  async login(
-    @Body() body: { email: string; password: string }
-  ): Promise<{ token: string }> {
-    const user = await this.userService.validateUser(body.email, body.password);
-    if (!user) {
-      throw new BadRequestException('Invalid credentials');
-    }
-    return this.authService.login(user);
-  }
+  // @Post('login')
+  // @HttpCode(200) // setting status code to 200, default post is 201
+  // async login(
+  //   @Body() body: { email: string; password: string }
+  // ): Promise<{ token: string }> {
+  //   const user = await this.userService.validateUser(body.email, body.password);
+  //   if (!user) {
+  //     throw new BadRequestException('Invalid credentials');
+  //   }
+  //   return this.authService.login(user);
+  // }
 
   @Get('me')
   @UseGuards(AuthGuard('jwt')) // protect endpoint w/ jwt strategy
