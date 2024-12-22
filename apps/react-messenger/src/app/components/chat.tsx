@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { async } from 'rxjs';
 
 /**
  * Chat component
@@ -10,6 +9,7 @@ const Chat: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]); // messages
   const [newMessage, setNewMessage] = useState(''); // input field
   const [error, setError] = useState<string | null>(null); // error messages
+  const [isLoading, setIsLoading] = useState(false); // state for loading indicator
 
   const userId = 1; // simulated logged-in user ID
   const contactID = 5; // simulated contact user iD
@@ -20,6 +20,7 @@ const Chat: React.FC = () => {
   const fetchMessages = async () => {
     try {
       setError(null); // clear previous errors
+      setIsLoading(true);
 
       // fetch messages from backend
       const response = await axios.get(
@@ -30,6 +31,8 @@ const Chat: React.FC = () => {
       setMessages(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load messages');
+    } finally {
+      setIsLoading(false); // hide the loading indicator
     }
   };
 
@@ -69,28 +72,41 @@ const Chat: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-2x1 font-bold mb-4">Chat</h1>
       <div className="w-1/3 border p-4 rounded-lg shadow-md">
+        {/* Reload Button */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={fetchMessages} // Trigger the fetchMessages function
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+          >
+            Reload
+          </button>
+        </div>
         {/* Conversation History */}
         <div className="mb-4 h-64 overflow-y-auto border-b pb-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`mb-2 ${
-                message.sender.id === userId
-                  ? 'text-right' // right align messages sent by logged-in
-                  : 'text-left' // left-align messages received
-              }`}
-            >
-              <p
-                className={`inline-block px-3 py-2 rounded-lg ${
+          {isLoading ? (
+            <p>Loading messages...</p> // show loading message when fetching
+          ) : (
+            messages.map((message, index) => (
+              <div
+                key={index}
+                className={`mb-2 ${
                   message.sender.id === userId
-                    ? 'bg-blue-500 text-white' // style for sent messages
-                    : 'bg-gray-300 text-black'// style for received messages
+                    ? 'text-right' // right align messages sent by logged-in
+                    : 'text-left' // left-align messages received
                 }`}
               >
-                {message.content}
-              </p>
-            </div>
-            ))}
+                <p
+                  className={`inline-block px-3 py-2 rounded-lg ${
+                    message.sender.id === userId
+                      ? 'bg-blue-500 text-white' // style for sent messages
+                      : 'bg-gray-300 text-black'// style for received messages
+                  }`}
+                >
+                  {message.content}
+                </p>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Send Message Form */}
