@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams} from 'react-router-dom';
 import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
+
+const socket: Socket = io('http://localhost:3000'); // connect to websocket server
 
 /**
  * Chat component
@@ -11,8 +15,9 @@ const Chat: React.FC = () => {
   const [error, setError] = useState<string | null>(null); // error messages
   const [isLoading, setIsLoading] = useState(false); // state for loading indicator
 
-  const userId = 1; // simulated logged-in user ID
-  const contactID = 5; // simulated contact user iD
+  const [searchParams] = useSearchParams(); // read query params
+  const userId = Number(searchParams.get('userId')) || 1; // default to 1
+  const contactID = Number(searchParams.get('contactId')) || 5; // default to 5
 
   /**
    * Fetches the conversation history between two users
@@ -43,25 +48,48 @@ const Chat: React.FC = () => {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault(); // prevent page reload
 
-    try {
-      setError(null); // clear previous errors
+    socket.emit('sendMessage', {
+      sender: userId,
+      receiver: contactID,
+      content: newMessage,
+    });
 
-      // send new message to backend
-      const response = await axios.post('http://localhost:3000/api/messages/send', {
-        sender: userId,
-        receiver: contactID,
-        content: newMessage,
-      });
+    setNewMessage(''); // clear input field
 
-      // add sent message to local state
-      setMessages((prevMessages) => [...prevMessages, response.data]);
-
-      // clear the input field
-      setNewMessage('');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send message');
-    }
+    // try {
+    //   setError(null); // clear previous errors
+    //
+    //   // send new message to backend
+    //   const response = await axios.post('http://localhost:3000/api/messages/send', {
+    //     sender: userId,
+    //     receiver: contactID,
+    //     content: newMessage,
+    //   });
+    //
+    //   // add sent message to local state
+    //   setMessages((prevMessages) => [...prevMessages, response.data]);
+    //
+    //   // clear the input field
+    //   setNewMessage('');
+    // } catch (err: any) {
+    //   setError(err.response?.data?.message || 'Failed to send message');
+    // }
   };
+
+  /**
+   * Sets up websocket listeners for real-time messages
+   */
+  useEffect(() => {
+    // listen for incoming messages
+    socket.on(`message:${userId}`, (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    // clean up listeners on unmount
+    return () => {
+      socket.off(`message:${userId}`);
+    };
+  }, [userId]);
 
   // Fetch messages when the component mounts
   useEffect(() => {

@@ -24,7 +24,9 @@ If you're trying to run this locally, you will need to update the SAMPLE-DOT-ENV
 * [ x ] - get monorepo set up and running locally
 * [ x ] - dockerize front and backend + set up docker compose
 * [ x ] - implement chat functionality without real-time
-* [ _ ] - real-time functionality
+* [ x ] - real-time functionality
+* [ _ ] - contact list to start new chats with other people
+* [ _ ] - use real login instead of simulated users
 * [ _ ] - users can add attachments to chats
 * [ _ ] - users can add MULTIPLE attachments to chats
 
